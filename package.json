@@ -6,11 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cross-env NODE_ENV=production nodemon ./server.js --exec babel-node",
+    "start": "nodemon server.js",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
     "migratetest": "knex migrate:latest --env=testing",
-    "rollbacktest": "knex migrate:rollback --env=testing",
-    "start": "node server.js"
+    "rollbacktest": "knex migrate:rollback --env=testing"
   },
   "repository": {
     "type": "git",

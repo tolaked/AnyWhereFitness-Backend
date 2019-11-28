@@ -1,8 +1,8 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-import users from "./routes/users";
+const users = require("./routes/users");
 
 const app = express();
 // body-parser Middleware
@@ -26,14 +26,14 @@ app.get("/", (req, res) =>
 app.use("/api/auth", users);
 
 app.all("*", (req, res) =>
-  res.status(404).json({
+  res.status(404).send({
     status: 404,
     error: "Route does not exist"
   })
 );
 app.use((err, req, res, next) => {
   if (err) {
-    return res.status(500).json({
+    return res.status(500).send({
       status: 500,
       error: "internal server error"
     });
@@ -50,4 +50,4 @@ app.listen(port, () => {
 });
 
 // expose app to be use in another file
-export default app;
+module.exports = app;
