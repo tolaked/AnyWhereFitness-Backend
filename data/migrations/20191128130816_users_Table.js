@@ -5,13 +5,12 @@ exports.up = function(knex) {
     table.string("lastName", 128).notNullable();
     table
       .string("email", 128)
-      .notNullable()
-      .unique();
+      .unique()
+      .notNullable();
     table.string("password", 128).notNullable();
     table.string("role", 128).notNullable();
   });
 };
-
 exports.down = function(knex) {
   return knex.schema.dropTableIfExists("users");
 };
