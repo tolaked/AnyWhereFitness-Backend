@@ -1,0 +1,56 @@
+{
+  "name": "anywherefitness-backend",
+  "version": "1.0.0",
+  "description": "AnywhereFitness is an app that makes it painless for Instructors and Clients alike to hold and attend Fitness classes wherever they might be held.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cross-env NODE_ENV=production nodemon ./server.js --exec babel-node",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
+    "migratetest": "knex migrate:latest --env=testing",
+    "rollbacktest": "knex migrate:rollback --env=testing",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tolaked/AnyWhereFitness-Backend.git"
+  },
+  "author": "Adetola",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tolaked/AnyWhereFitness-Backend/issues"
+  },
+  "homepage": "https://github.com/tolaked/AnyWhereFitness-Backend#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.20.2",
+    "pg": "^7.12.1",
+    "sqlite3": "^4.1.0",
+    "nodemon": "^1.19.4",
+    "cross-env": "^6.0.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/register": "^7.6.2",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "cross-env": "^6.0.3",
+    "eslint": "^6.6.0",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
+    "supertest": "^4.0.2"
+  }
+}
