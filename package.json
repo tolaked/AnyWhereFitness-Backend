@@ -10,7 +10,7 @@
     "rollback": "knex migrate:rollback",
     "migratetest": "knex migrate:latest --env=testing",
     "rollbacktest": "knex migrate:rollback --env=testing",
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

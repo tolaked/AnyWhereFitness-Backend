@@ -2,6 +2,9 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
+import users from "./routes/users";
+
+const app = express();
 // body-parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -19,6 +22,8 @@ app.get("/", (req, res) =>
     ]
   })
 );
+
+app.use("/api/auth", users);
 
 app.all("*", (req, res) =>
   res.status(404).json({
