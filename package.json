@@ -45,11 +45,12 @@
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
-    "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.18.2",
     "cross-env": "^6.0.3",
     "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2",
     "jest": "^24.9.0",
+    "moment": "^2.24.0",
     "nodemon": "^1.19.4",
     "supertest": "^4.0.2"
   }

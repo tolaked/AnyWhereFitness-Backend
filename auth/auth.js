@@ -11,7 +11,12 @@ class Auth {
     Users.addUser(newUser)
       .then(saved => {
         const [newUser] = saved;
-        const token = auth.generateToken(newUser);
+        const token = auth.generateToken(
+          newUser.email,
+          newUser.id,
+          newUser.role
+        );
+
         console.log(token);
         delete newUser.password;
         return res.status(201).json({ newUser, token });
