@@ -16,7 +16,7 @@ exports.up = function(knex) {
       .unsigned()
       .defaultTo(0);
     table
-      .string("maxClassSize")
+      .integer("maxClassSize")
       .unsigned()
       .notNullable();
     table
