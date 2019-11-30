@@ -1,35 +1,21 @@
 const bcrypt = require("bcryptjs");
 const Users = require("../models/dbModel");
 const auth = require("../middleware/auth");
-const knex = require("../data/dbConfig");
 
 class Auth {
   static async createUser(req, res) {
-    let user = req.body;
-    const hash = bcrypt.hashSync(user.password, 11);
-    const newUser = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      password: hash,
-      email: user.email,
-      role: user.role
-    };
+    req.body.password = bcrypt.hashSync(req.body.password, 11);
 
-    knex("users")
-      .insert(newUser)
-      .then(function() {
-        knex
-          .select()
-          .from("users")
-          .where("email", newUser.email)
-          .then(function(user) {
-            const [savedUser] = user;
-            const token = auth.generateToken(savedUser);
-            delete savedUser.password;
-            res.send({ savedUser, token });
-          });
+    const newUser = { ...req.body };
+
+    Users.addUser(newUser)
+      .then(saved => {
+        const [newUser] = saved;
+        const token = auth.generateToken(newUser);
+        console.log(token);
+        delete newUser.password;
+        return res.status(201).json({ newUser, token });
       })
-
       .catch(error => {
         if (error && error.routine === "_bt_check_unique") {
           res
@@ -42,6 +28,7 @@ class Auth {
         }
       });
   }
+
   static login(req, res) {
     let { email, password } = req.body;
 
