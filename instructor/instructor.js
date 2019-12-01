@@ -7,38 +7,54 @@ module.exports = {
     req.body.instructorId = req.user.id;
     const classDetails = { ...req.body };
 
-    Users.addClass(classDetails)
+    return Users.addClass(classDetails)
       .then(saved => {
-        res.status(201).json({
+        return res.status(201).json({
           status: 201,
           message: "class created successfully",
           saved
         });
       })
       .catch(error => {
-        res.status(500).json({
+        return res.status(500).json({
           status: 500,
           message: error
         });
       });
   },
+
   editClass(req, res) {
     const id = parseInt(req.params.id);
     const changes = req.body;
 
-    Users.editClass(id, changes)
+    return Users.editClass(id, changes)
       .then(updatedClass => {
-        res.status(201).json({
+        return res.status(201).json({
           status: 200,
           message: "class updated successfully",
           updatedClass
         });
       })
       .catch(error => {
-        res.status(500).json({
+        return res.status(500).json({
           status: 500,
           message: error
         });
+      });
+  },
+
+  deleteClass(req, res) {
+    const id = parseInt(req.params.id);
+
+    return Users.deleteClass(id)
+      .then(deletedClass => {
+        return res.status(200).json({
+          status: 200,
+          message: "Class deleted successfully"
+        });
+      })
+      .catch(error => {
+        return error;
       });
   }
 };
