@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const users = require("./routes/users");
+const instructor = require("./routes/instructor");
 
 const app = express();
 // body-parser Middleware
@@ -12,25 +13,26 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-app.get("/", (req, res) =>
-  res.status(200).json({
+app.get("/", (req, res) => {
+  return res.status(200).json({
     status: 200,
     data: [
       {
         message: "Welcome to AnyWhere_Fitness"
       }
     ]
-  })
-);
+  });
+});
 
 app.use("/api/auth", users);
+app.use("/instructor", instructor);
 
-app.all("*", (req, res) =>
-  res.status(404).send({
+app.all("*", (req, res) => {
+  return res.status(404).send({
     status: 404,
     error: "Route does not exist"
-  })
-);
+  });
+});
 app.use((err, req, res, next) => {
   if (err) {
     return res.status(500).send({

@@ -3,19 +3,15 @@ const Users = require("../models/dbModel");
 const auth = require("../middleware/auth");
 
 class Auth {
-  static async createUser(req, res) {
+  async createUser(req, res) {
     req.body.password = bcrypt.hashSync(req.body.password, 11);
 
     const newUser = { ...req.body };
 
-    Users.addUser(newUser)
+    return Users.addUser(newUser)
       .then(saved => {
         const [newUser] = saved;
-        const token = auth.generateToken(
-          newUser.email,
-          newUser.id,
-          newUser.role
-        );
+        const token = auth.generateToken(newUser.id, newUser.role);
 
         console.log(token);
         delete newUser.password;
@@ -23,38 +19,58 @@ class Auth {
       })
       .catch(error => {
         if (error && error.routine === "_bt_check_unique") {
-          res
+          return res
             .status(409)
             .json({ status: 409, message: "email already exists" });
         } else {
-          res
+          return res
             .status(500)
             .json({ status: 500, message: "something went wrong" });
         }
       });
   }
 
-  static login(req, res) {
-    let { email, password } = req.body;
+  /**
+   * @description Log in a valid user
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  async login(req, res) {
+    try {
+      const { email, password } = req.body;
 
-    Users.findUserBy({ email })
-      .first()
-      .then(user => {
-        // check if the provided password is correct
-        if (user && bcrypt.compareSync(password, user.password)) {
-          const token = auth.generateToken(user);
+      const user = await Users.findUserBy({ email });
 
-          res
-            .status(200)
-            .json({ message: `Welcome ${user.firstName}!`, token: token });
-        } else {
-          res.status(401).json({ message: "Invalid Credentials" });
-        }
-      })
-      .catch(error => {
-        res.status(500).json(error);
+      if (!user) {
+        return res.status(404).json({ message: "User does not exist" });
+      }
+
+      const isPasswordValid = bcrypt.compareSync(password, user.password);
+
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid username/password" });
+      }
+
+      const payload = {
+        id: user.id,
+        role: user.role
+      };
+
+      const options = {
+        expiresIn: "24h"
+      };
+
+      const token = auth.generateToken(payload, options);
+
+      return res.status(200).json({
+        message: "Login successfully",
+        token
       });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
   }
 }
 
-module.exports = Auth;
+module.exports = new Auth();

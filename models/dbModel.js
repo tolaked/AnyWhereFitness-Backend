@@ -6,16 +6,16 @@ const addUser = user => {
     .returning("*");
 };
 
-const findUserBy = filter => {
-  return db("users")
+const findUserBy = (filter, tableName = "users") => {
+  return db(tableName)
     .where(filter)
-    .first();
+    .then(data => data[0]);
 };
 
-const findById = (id, tableName) => {
-  return db(tableName)
+const findById = id => {
+  return db("classes")
     .where({ id })
-    .first();
+    .then(data => data[0]);
 };
 
 const addClass = newClass => {
@@ -33,10 +33,18 @@ const editClass = async (id, changes) => {
   return userId;
 };
 
+const deleteClass = id => {
+  return db("classes")
+    .where({ id })
+    .del()
+    .returning("*");
+};
+
 module.exports = {
   editClass,
   addClass,
   findById,
   findUserBy,
-  addUser
+  addUser,
+  deleteClass
 };

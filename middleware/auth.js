@@ -1,19 +1,15 @@
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
 
 const Users = require("../models/dbModel");
 
-dotenv.config();
-
 class Auth {
-  static generateToken(email, id, role) {
-    const token = jwt.sign({ email, id, role }, process.env.SECRET_KEY, {
-      expiresIn: "48h"
-    });
+  generateToken(payload = {}, options = {}) {
+    const token = jwt.sign(payload, process.env.SECRET_KEY, options);
 
     return token;
   }
-  static verifyToken(req, res, next) {
+
+  async verifyToken(req, res, next) {
     const { token } = req.headers;
 
     // check if user provides a token
@@ -29,9 +25,10 @@ class Auth {
       // decode and get token
       const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
 
+      const id = decodedToken.id;
       // find user by email
-      const user = Users.findUserBy(decodedToken.email);
-      console.log();
+      const user = await Users.findUserBy({ id });
+
       // check if user exist
       if (!user) {
         return res.status(401).json({
@@ -49,16 +46,45 @@ class Auth {
       }
 
       // make current logged in user email available
-      req.user = decodedToken;
+      req.user = user;
+      return next();
     } catch (error) {
       return res.status(400).json({
         status: 400,
         error
       });
     }
-    next();
   }
 
-  static isInstructor(req, res, next) {}
+  async canDelete(req, res, next) {
+    try {
+      // console.log(req.user);
+      const instructorId = req.user.id;
+      const classId = parseInt(req.params.id);
+
+      const userClass = await Users.findUserBy({ id: classId }, "classes");
+
+      if (!userClass) {
+        return res.status(404).json({
+          status: 404,
+          message: "class not found"
+        });
+      }
+
+      if (userClass.instructorId !== instructorId) {
+        return res.status(403).json({
+          status: 403,
+          message: "Sorry, you cannot delete this class"
+        });
+      }
+
+      return next();
+    } catch (error) {
+      return res.status(400).json({
+        status: 400,
+        error
+      });
+    }
+  }
 }
-module.exports = Auth;
+module.exports = new Auth();
