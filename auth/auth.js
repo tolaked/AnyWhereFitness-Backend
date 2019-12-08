@@ -8,12 +8,20 @@ class Auth {
 
     const newUser = { ...req.body };
 
-    return Users.addUser(newUser)
+    return Users.add(newUser, "users")
       .then(saved => {
         const [newUser] = saved;
-        const token = auth.generateToken(newUser.id, newUser.role);
+        const payload = {
+          id: newUser.id,
+          role: newUser.role
+        };
 
-        console.log(token);
+        const options = {
+          expiresIn: "24h"
+        };
+
+        const token = auth.generateToken(payload, options);
+
         delete newUser.password;
         return res.status(201).json({ newUser, token });
       })
@@ -40,7 +48,8 @@ class Auth {
     try {
       const { email, password } = req.body;
 
-      const user = await Users.findUserBy({ email });
+      const user = await Users.findBy({ email });
+      console.log(user);
 
       if (!user) {
         return res.status(404).json({ message: "User does not exist" });

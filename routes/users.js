@@ -1,16 +1,15 @@
 const express = require("express");
 const Auth = require("../auth/auth");
-const Instructor = require("../instructor/instructor");
-const { verifyToken, canDelete } = require("../middleware/auth");
+const reservation = require("../user/user");
+const { verifyToken, classCapacity } = require("../middleware/auth");
 
 const { createUser, login } = Auth;
-const { addClass, editClass, deleteClass } = Instructor;
+const { postReservation } = reservation;
+
 const router = express.Router();
 
 router.post("/register", createUser);
 router.post("/login", login);
-router.post("/class", verifyToken, addClass);
-router.put("/class/:id", verifyToken, editClass);
-router.delete("/remove/:id", verifyToken, canDelete, deleteClass);
+router.post("/reservation/:id", verifyToken, classCapacity, postReservation);
 
 module.exports = router;

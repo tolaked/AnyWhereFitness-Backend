@@ -1,20 +1,27 @@
 const express = require("express");
 const Instructor = require("../instructor/instructor");
-const { verifyToken, canDelete } = require("../middleware/auth");
 
-const { addClass, editClass, deleteClass } = Instructor;
+const {
+  verifyToken,
+  verifyAdminToken,
+  canDelete
+} = require("../middleware/auth");
+
+const { addClass, editClass, deleteClass, getClass, findClass } = Instructor;
+
 const router = express.Router();
 
-router.post("/class", verifyToken, addClass);
+router.post("/class", verifyAdminToken, addClass);
+router
+  .route("/class")
+  .all(verifyToken)
+  .get(getClass);
 
+router.get("/class/:id", verifyToken, findClass);
 router
   .route("/class/:id")
-  .all(verifyToken)
+  .all(verifyAdminToken, canDelete)
   .put(editClass)
-  .delete(canDelete, deleteClass);
-
-// router.post("/class", verifyToken, addClass);
-// router.put("/class/:id", verifyToken, editClass);
-// router.delete("/remove/:id", verifyToken, canDelete, deleteClass);
+  .delete(deleteClass);
 
 module.exports = router;

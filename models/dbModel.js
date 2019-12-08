@@ -1,12 +1,12 @@
 const db = require("../data/dbConfig");
 
-const addUser = user => {
-  return db("users")
-    .insert(user)
+const add = (data, tableName) => {
+  return db(tableName)
+    .insert(data)
     .returning("*");
 };
 
-const findUserBy = (filter, tableName = "users") => {
+const findBy = (filter, tableName = "users") => {
   return db(tableName)
     .where(filter)
     .then(data => data[0]);
@@ -18,19 +18,19 @@ const findById = id => {
     .then(data => data[0]);
 };
 
-const addClass = newClass => {
-  return db("classes")
-    .insert(newClass)
-    .returning("*");
-};
-
 const editClass = async (id, changes) => {
   const userId = await db("classes")
-    .where({ id })
+    .where(id)
     .update(changes)
     .returning("*");
 
   return userId;
+};
+
+const getClass = () => {
+  return db("classes")
+    .select("*")
+    .returning("*");
 };
 
 const deleteClass = id => {
@@ -40,11 +40,20 @@ const deleteClass = id => {
     .returning("*");
 };
 
+const addReservation = (reservation, id) => {
+  return db("reservations")
+    .insert(reservation)
+    .then(() => {
+      return findById(id);
+    });
+};
+
 module.exports = {
   editClass,
-  addClass,
+  add,
   findById,
-  findUserBy,
-  addUser,
-  deleteClass
+  findBy,
+  deleteClass,
+  getClass,
+  addReservation
 };
