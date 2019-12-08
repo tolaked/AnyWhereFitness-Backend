@@ -7,7 +7,7 @@ module.exports = {
     req.body.instructorId = req.user.id;
     const classDetails = { ...req.body };
 
-    return Users.addClass(classDetails)
+    return Users.add(classDetails, "classes")
       .then(saved => {
         return res.status(201).json({
           status: 201,
@@ -27,7 +27,7 @@ module.exports = {
     const id = parseInt(req.params.id);
     const changes = req.body;
 
-    return Users.editClass(id, changes)
+    return Users.editClass({ id }, changes)
       .then(updatedClass => {
         return res.status(201).json({
           status: 200,
@@ -56,5 +56,25 @@ module.exports = {
       .catch(error => {
         return error;
       });
+  },
+
+  getClass(req, res) {
+    Users.getClass().then(allClass => {
+      return res.status(200).json({
+        status: 200,
+        message: `${allClass.length} classes found`,
+        classes: allClass
+      });
+    });
+  },
+
+  findClass(req, res) {
+    const id = parseInt(req.params.id);
+    Users.findById(id).then(singleClass => {
+      return res.status(200).json({
+        status: 200,
+        data: singleClass
+      });
+    });
   }
 };
