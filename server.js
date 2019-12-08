@@ -43,7 +43,7 @@ app.use((err, req, res, next) => {
   return next();
 });
 
-// Define application port number
+// Define application port number.
 const port = process.env.PORT || 6000;
 
 // Start server
